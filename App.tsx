@@ -1,14 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
-
-import React, {useState} from 'react';
+import React from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -19,25 +9,14 @@ import {
   View,
   NativeModules,
   Platform,
-  Button,
-  Dimensions,
-  Image,
-  FlatList,
 } from 'react-native';
 import {openSettings} from 'react-native-permissions';
-import ImagePicker from 'react-native-image-crop-picker';
-
+import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import data from './data';
-
-const {width} = Dimensions.get('window');
-const numberGrid = 3;
-const itemWidth = width / numberGrid;
+import {Avatar} from './Avatar';
 
 const App = () => {
-  const [myData, setMyData] = useState(data);
-
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -46,15 +25,8 @@ const App = () => {
 
   const {MyTextModule} = NativeModules;
 
-  const renderItem = ({item}: any) => {
-    if (!item) {
-      return;
-    }
-    return (
-      <View>
-        <Image source={{uri: item.avatar}} style={styles.itemImage} />
-      </View>
-    );
+  const onAvatarChange = (image: ImageOrVideo) => {
+    console.log(image);
   };
 
   const openMySettings = () => {
@@ -100,26 +72,10 @@ const App = () => {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <View style={styles.sectionButtons}>
-            <Button
-              title="selecionar foto"
-              color="black"
-              onPress={selectPhotos}
+            <Avatar
+              onChange={onAvatarChange}
+              source={require('./avatar-placeholder.png')}
             />
-            <Button
-              title="abrir configurações"
-              color="black"
-              onPress={openMySettings}
-            />
-          </View>
-          <View style={styles.sectionImages}>
-            {myData && (
-              <FlatList
-                keyExtractor={(_, index) => String(index)}
-                numColumns={numberGrid}
-                data={myData}
-                renderItem={renderItem}
-              />
-            )}
           </View>
         </View>
       </ScrollView>
@@ -130,10 +86,6 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  itemImage: {
-    width: itemWidth,
-    height: itemWidth,
   },
   header: {
     height: 150,
