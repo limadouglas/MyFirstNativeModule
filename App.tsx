@@ -8,7 +8,7 @@
  * @format
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -17,49 +17,73 @@ import {
   Text,
   useColorScheme,
   View,
+  NativeModules,
+  Platform,
+  Button,
+  Dimensions,
+  Image,
+  FlatList,
 } from 'react-native';
+import {openSettings} from 'react-native-permissions';
+import ImagePicker from 'react-native-image-crop-picker';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-const Section: React.FC<{
-  title: string;
-}> = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+import data from './data';
+
+const {width} = Dimensions.get('window');
+const numberGrid = 3;
+const itemWidth = width / numberGrid;
 
 const App = () => {
+  const [myData, setMyData] = useState(data);
+
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  };
+
+  const {MyTextModule} = NativeModules;
+
+  const renderItem = ({item}: any) => {
+    if (!item) {
+      return;
+    }
+    return (
+      <View>
+        <Image source={{uri: item.avatar}} style={styles.itemImage} />
+      </View>
+    );
+  };
+
+  const openMySettings = () => {
+    openSettings().catch(() => ({}));
+  };
+
+  const openGalery = () => {};
+  const selectPhotos = async () => {
+    try {
+      const selectedImage: any = await ImagePicker.openPicker({
+        cropping: true,
+        writeTempFile: true,
+        forceJpg: true,
+        width: 300,
+        height: 300,
+      });
+    } catch (err) {}
+  };
+
+  const onPress = async () => {
+    if (Platform.OS === 'android') {
+      console.log('result react native: ', await MyTextModule.getText('olaaa'));
+      console.log('result react nativeTwo: ', await MyTextModule.getTextTwo());
+    } else {
+      console.log(
+        'result react native: ',
+        await MyTextModule.getText('olaaax', 'doido'),
+      );
+    }
   };
 
   return (
@@ -68,25 +92,35 @@ const App = () => {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <Header />
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Bridge/Native Modules</Text>
+        </View>
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+          <View style={styles.sectionButtons}>
+            <Button
+              title="selecionar foto"
+              color="black"
+              onPress={selectPhotos}
+            />
+            <Button
+              title="abrir configurações"
+              color="black"
+              onPress={openMySettings}
+            />
+          </View>
+          <View style={styles.sectionImages}>
+            {myData && (
+              <FlatList
+                keyExtractor={(_, index) => String(index)}
+                numColumns={numberGrid}
+                data={myData}
+                renderItem={renderItem}
+              />
+            )}
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -94,6 +128,31 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  itemImage: {
+    width: itemWidth,
+    height: itemWidth,
+  },
+  header: {
+    height: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    color: 'black',
+    fontSize: 20,
+  },
+  sectionButtons: {
+    height: 120,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sectionImages: {
+    flex: 1,
+    marginTop: 50,
+  },
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
