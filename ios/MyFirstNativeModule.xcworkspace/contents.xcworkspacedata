@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/douglas/Documents/codigo_qualidade/MyFirstNativeModule/ios/RCTMyFirstModule.m">
+   </FileRef>
+   <FileRef
       location = "group:MyFirstNativeModule.xcodeproj">
    </FileRef>
    <FileRef

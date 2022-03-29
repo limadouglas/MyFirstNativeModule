@@ -1,7 +1,23 @@
-import React from 'react';
-import {SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  NativeModules,
+  Button,
+} from 'react-native';
 
 const BasicExample = () => {
+  const {MyFirstModule} = NativeModules;
+  const [text, setText] = useState('sem texto nativo');
+
+  const onPress = () => {
+    const nativeText = MyFirstModule.getText();
+    setText(nativeText);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'dark-content'} />
@@ -9,7 +25,11 @@ const BasicExample = () => {
         <Text style={styles.headerTitle}>Exemplo Básico</Text>
       </View>
       <View style={styles.content}>
-        <Text style={styles.contentText}>texto do native modules</Text>
+        <Text style={styles.contentText}>{text}</Text>
+        <Button
+          title="Clique para invocar o native module!"
+          onPress={onPress}
+        />
       </View>
     </SafeAreaView>
   );
@@ -31,13 +51,16 @@ const styles = StyleSheet.create({
   },
   content: {
     backgroundColor: '#ececec',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
     flex: 1,
   },
   contentText: {
     color: 'black',
     fontSize: 24,
+  },
+  button: {
+    marginTop: 50,
   },
 });
 
