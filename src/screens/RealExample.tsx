@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-  Button,
-} from 'react-native';
-import {openLimitedPhotoLibraryPicker} from 'react-native-permissions';
+import {SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
 
 import {Avatar} from '../components/Avatar';
 
@@ -20,10 +12,6 @@ const RealExample = () => {
       </View>
       <View style={styles.content}>
         <Avatar source={require('../assets/avatar-placeholder.png')} />
-        <Button
-          title="Abrir biblioteca"
-          onPress={() => openLimitedPhotoLibraryPicker()}
-        />
       </View>
     </SafeAreaView>
   );

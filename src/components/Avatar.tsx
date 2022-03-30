@@ -3,17 +3,17 @@ import {
   Alert,
   Image,
   ImageProps,
-  // NativeModules,
+  NativeModules,
   Platform,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
 import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
 import {
-  // openLimitedPhotoLibraryPicker,
+  openLimitedPhotoLibraryPicker,
   openSettings,
 } from 'react-native-permissions';
-// import asyncStorage from '../screens/asyncStorage';
+import asyncStorage from '../screens/asyncStorage';
 
 interface AvatarProps extends ImageProps {
   onChange?: (file: ImageOrVideo) => void;
@@ -22,25 +22,21 @@ interface AvatarProps extends ImageProps {
 export const Avatar = (props: AvatarProps) => {
   //@ts-ignore
   const [uri, setUri] = React.useState(props.source?.uri || undefined);
-  // const {MyFirstModule} = NativeModules;
+  const {MyFirstModule} = NativeModules;
 
   const chooseImage = async () => {
     try {
-      //sem solução
-      openPicker();
-
-      // com solução
-      // const photosLiberated = await MyFirstModule.getNumberPhotosLiberated();
-      // console.log('photosLiberated:', photosLiberated);
-      // if (
-      //   photosLiberated > 0 ||
-      //   !(await asyncStorage.get('@USER:open-library'))
-      // ) {
-      //   openPicker();
-      //   asyncStorage.set('@USER:open-library', true);
-      // } else {
-      //   openPhotoLibrary();
-      // }
+      const photosLiberated = await MyFirstModule.getNumberPhotosLiberated();
+      console.log('photosLiberated:', photosLiberated);
+      if (
+        photosLiberated > 0 ||
+        !(await asyncStorage.get('@USER:open-library'))
+      ) {
+        openPicker();
+        asyncStorage.set('@USER:open-library', true);
+      } else {
+        openPhotoLibrary();
+      }
     } catch (err) {
       //@ts-ignore
       if (Platform.OS === 'ios' && err?.code === 'E_PERMISSION_MISSING') {
@@ -49,9 +45,9 @@ export const Avatar = (props: AvatarProps) => {
     }
   };
 
-  // const openPhotoLibrary = () => {
-  //   openLimitedPhotoLibraryPicker().catch(() => {});
-  // };
+  const openPhotoLibrary = () => {
+    openLimitedPhotoLibraryPicker().catch(() => {});
+  };
 
   const openPicker = () => {
     ImagePicker.openPicker({

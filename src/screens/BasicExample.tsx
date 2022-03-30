@@ -5,17 +5,17 @@ import {
   StyleSheet,
   Text,
   View,
-  // NativeModules,
+  NativeModules,
   Button,
 } from 'react-native';
 
 const BasicExample = () => {
-  // const {MyFirstModule} = NativeModules;
+  const {MyFirstModule} = NativeModules;
   const [text, setText] = useState('sem texto nativo');
 
   const onPress = async () => {
-    // const nativeText = await MyFirstModule.getText();
-    // setText(nativeText);
+    const nativeText = await MyFirstModule.getText();
+    setText(nativeText);
   };
 
   return (
